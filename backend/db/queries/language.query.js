@@ -1,12 +1,39 @@
 const LanguageModel = require("../model/language.model");
 
-
 async function getLanguages(orderBy, dir, search) {
+   // TASK 4
+   let orderExpression = {};
+   let searchExpression = {};
+ 
+   // filtering
+   if (search) {
+     searchExpression = {
+       $or: [
+         { name: { $regex: new RegExp(search, "i") } },
+         { designer: { $regex: new RegExp(search, "i") } },
+         { maintainer: { $regex: new RegExp(search, "i") } },
+       ],
+     };
+   }
+ 
+   // sorting
+   if (orderBy && dir) {
+     orderExpression = { [orderBy]: dir };
+   }
+ 
+   return await LanguageModel.find(searchExpression)
+     .sort(orderExpression)
+     .select({ langid: 1, name: 1, _id: 0 });
+
   // TASK 1
-  // TASK 4
+  console.log("getLanguages")
+  const languages = await LanguageModel.find({}).select({ langid: 1, name: 1, _id: 0 });
+  return languages; 
+
 }
 
 async function getLanguageById(langid) {
+  return await LanguageModel.find({"langid": langid});
   // TASK 2
 }
 
@@ -32,5 +59,5 @@ module.exports = {
   createLanguage,
   updateLanguage,
   getLanguagesByMinStarsOrMinDate,
-  getLanguagesByMaxStarsOrMaxDate
+  getLanguagesByMaxStarsOrMaxDate,
 };
