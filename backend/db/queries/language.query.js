@@ -33,7 +33,9 @@ async function getLanguages(orderBy, dir, search) {
 }
 
 async function getLanguageById(langid) {
-  return await LanguageModel.find({"langid": langid});
+  const language = await LanguageModel.findOne({langid});
+  return [language]; 
+  //return await LanguageModel.find({"langid": langid});
   // TASK 2
 }
 
